@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Moje první stránka</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="container">
+    <h1>Co se děje dnes</h1>
+    <p>Najdi lidi na aktivity ve městě.</p>
+
+    <button onclick="showForm()">Přidat aktivitu</button>
+
+    <div id="form" style="margin-top:20px; display:none;">
+      <input type="text" id="activityName" placeholder="Název aktivity">
+      <input type="text" id="activityPlace" placeholder="Místo">
+      <input type="time" id="activityTime">
+      <button onclick="saveActivity()">Uložit</button>
+    </div>
+
+    <div id="activityList" style="margin-top:20px;"></div>
+  </div>
+
+  <script>
+    function showForm() {
+      document.getElementById("form").style.display = "block";
+    }
+
+    function saveActivity() {
+      const name = document.getElementById("activityName").value;
+      const place = document.getElementById("activityPlace").value;
+      const time = document.getElementById("activityTime").value;
+
+      if (name === "" || place === "" || time === "") {
+        alert("Vyplň všechna pole.");
+        return;
+      }
+
+      const activityList = document.getElementById("activityList");
+
+      const newActivity = document.createElement("div");
+      newActivity.style.background = "#f9fafb";
+      newActivity.style.padding = "15px";
+      newActivity.style.borderRadius = "12px";
+      newActivity.style.marginTop = "10px";
+      newActivity.style.border = "1px solid #e5e7eb";
+
+      newActivity.innerHTML = "<strong>" + name + "</strong><br>" + place + " • " + time;
+
+      activityList.appendChild(newActivity);
+
+      document.getElementById("activityName").value = "";
+      document.getElementById("activityPlace").value = "";
+      document.getElementById("activityTime").value = "";
+      document.getElementById("form").style.display = "none";
+    }
+  </script>
+
+</body>
+</html>
