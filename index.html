@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Moje první stránka</title>
+  <title>Co se děje dnes</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -12,26 +12,72 @@
     <h1>Co se děje dnes</h1>
     <p>Najdi lidi na aktivity ve městě.</p>
 
-    <button onclick="showForm()">Přidat aktivitu</button>
+    <button class="main-button" onclick="showForm()">Přidat aktivitu</button>
 
-    <div id="form" style="margin-top:20px; display:none;">
+    <div id="form" class="form-box" style="display: none;">
       <input type="text" id="activityName" placeholder="Název aktivity">
       <input type="text" id="activityPlace" placeholder="Místo">
       <input type="time" id="activityTime">
-      <button onclick="saveActivity()">Uložit</button>
+
+      <div class="button-row">
+        <button onclick="saveActivity()">Uložit</button>
+        <button class="secondary-button" onclick="hideForm()">Zrušit</button>
+      </div>
     </div>
 
-    <div id="activityList" style="margin-top:20px;"></div>
+    <div id="activityList" class="activity-list"></div>
   </div>
 
   <script>
+    let activities = JSON.parse(localStorage.getItem("activities")) || [];
+
     function showForm() {
       document.getElementById("form").style.display = "block";
     }
 
+    function hideForm() {
+      document.getElementById("form").style.display = "none";
+      clearForm();
+    }
+
+    function clearForm() {
+      document.getElementById("activityName").value = "";
+      document.getElementById("activityPlace").value = "";
+      document.getElementById("activityTime").value = "";
+    }
+
+    function saveActivitiesToStorage() {
+      localStorage.setItem("activities", JSON.stringify(activities));
+    }
+
+    function renderActivities() {
+      const activityList = document.getElementById("activityList");
+      activityList.innerHTML = "";
+
+      if (activities.length === 0) {
+        activityList.innerHTML = '<div class="empty-state">Zatím tu není žádná aktivita.</div>';
+        return;
+      }
+
+      activities.forEach((activity, index) => {
+        const newActivity = document.createElement("div");
+        newActivity.className = "activity-card";
+
+        newActivity.innerHTML = `
+          <div class="activity-content">
+            <strong>${activity.name}</strong>
+            <div class="activity-meta">${activity.place} • ${activity.time}</div>
+          </div>
+          <button class="delete-button" onclick="deleteActivity(${index})">Smazat</button>
+        `;
+
+        activityList.appendChild(newActivity);
+      });
+    }
+
     function saveActivity() {
-      const name = document.getElementById("activityName").value;
-      const place = document.getElementById("activityPlace").value;
+      const name = document.getElementById("activityName").value.trim();
+      const place = document.getElementById("activityPlace").value.trim();
       const time = document.getElementById("activityTime").value;
 
       if (name === "" || place === "" || time === "") {
@@ -39,24 +85,26 @@
         return;
       }
 
-      const activityList = document.getElementById("activityList");
+      const newActivity = {
+        name: name,
+        place: place,
+        time: time
+      };
 
-      const newActivity = document.createElement("div");
-      newActivity.style.background = "#f9fafb";
-      newActivity.style.padding = "15px";
-      newActivity.style.borderRadius = "12px";
-      newActivity.style.marginTop = "10px";
-      newActivity.style.border = "1px solid #e5e7eb";
-
-      newActivity.innerHTML = "<strong>" + name + "</strong><br>" + place + " • " + time;
-
-      activityList.appendChild(newActivity);
-
-      document.getElementById("activityName").value = "";
-      document.getElementById("activityPlace").value = "";
-      document.getElementById("activityTime").value = "";
-      document.getElementById("form").style.display = "none";
+      activities.push(newActivity);
+      saveActivitiesToStorage();
+      renderActivities();
+      clearForm();
+      hideForm();
     }
+
+    function deleteActivity(index) {
+      activities.splice(index, 1);
+      saveActivitiesToStorage();
+      renderActivities();
+    }
+
+    renderActivities();
   </script>
 
 </body>
