@@ -1,111 +1,261 @@
 <!DOCTYPE html>
 <html lang="cs">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Co se děje dnes</title>
-  <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Co se děje dnes</title>
+
+<style>
+
+body{
+font-family: Arial, sans-serif;
+background:#f3f4f6;
+margin:0;
+padding:40px;
+}
+
+.container{
+max-width:700px;
+margin:auto;
+background:white;
+padding:30px;
+border-radius:16px;
+box-shadow:0 10px 25px rgba(0,0,0,0.1);
+}
+
+h1{
+font-size:36px;
+margin-bottom:10px;
+}
+
+p{
+color:#555;
+margin-bottom:20px;
+}
+
+button{
+background:black;
+color:white;
+border:none;
+padding:12px 18px;
+border-radius:10px;
+cursor:pointer;
+font-size:15px;
+}
+
+.join{
+background:black;
+}
+
+.delete{
+background:#ef4444;
+}
+
+input{
+width:100%;
+padding:10px;
+margin-top:10px;
+border-radius:10px;
+border:1px solid #ddd;
+}
+
+.form{
+margin-top:20px;
+}
+
+.activity{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:15px;
+border:1px solid #eee;
+border-radius:12px;
+margin-top:15px;
+background:#fafafa;
+}
+
+.meta{
+color:#666;
+margin-top:4px;
+}
+
+.people{
+margin-top:6px;
+font-size:14px;
+}
+
+.buttons{
+display:flex;
+gap:8px;
+}
+
+.empty{
+text-align:center;
+padding:20px;
+border:1px dashed #ccc;
+border-radius:12px;
+margin-top:20px;
+color:#777;
+}
+
+</style>
 </head>
+
 <body>
 
-  <div class="container">
-    <h1>Co se děje dnes</h1>
-    <p>Najdi lidi na aktivity ve městě.</p>
+<div class="container">
 
-    <button class="main-button" onclick="showForm()">Přidat aktivitu</button>
+<h1>Co se děje dnes</h1>
+<p>Najdi lidi na aktivity ve městě.</p>
 
-    <div id="form" class="form-box" style="display: none;">
-      <input type="text" id="activityName" placeholder="Název aktivity">
-      <input type="text" id="activityPlace" placeholder="Místo">
-      <input type="time" id="activityTime">
+<button onclick="showForm()">Přidat aktivitu</button>
 
-      <div class="button-row">
-        <button onclick="saveActivity()">Uložit</button>
-        <button class="secondary-button" onclick="hideForm()">Zrušit</button>
-      </div>
-    </div>
+<div id="form" class="form" style="display:none;">
 
-    <div id="activityList" class="activity-list"></div>
-  </div>
+<input id="name" placeholder="Název aktivity">
+<input id="place" placeholder="Místo">
+<input id="time" type="time">
+<input id="limit" type="number" placeholder="Max lidí">
 
-  <script>
-    let activities = JSON.parse(localStorage.getItem("activities")) || [];
+<br><br>
 
-    function showForm() {
-      document.getElementById("form").style.display = "block";
-    }
+<button onclick="addActivity()">Uložit</button>
 
-    function hideForm() {
-      document.getElementById("form").style.display = "none";
-      clearForm();
-    }
+</div>
 
-    function clearForm() {
-      document.getElementById("activityName").value = "";
-      document.getElementById("activityPlace").value = "";
-      document.getElementById("activityTime").value = "";
-    }
+<div id="list"></div>
 
-    function saveActivitiesToStorage() {
-      localStorage.setItem("activities", JSON.stringify(activities));
-    }
+</div>
 
-    function renderActivities() {
-      const activityList = document.getElementById("activityList");
-      activityList.innerHTML = "";
+<script>
 
-      if (activities.length === 0) {
-        activityList.innerHTML = '<div class="empty-state">Zatím tu není žádná aktivita.</div>';
-        return;
-      }
+let activities = JSON.parse(localStorage.getItem("activities")) || []
 
-      activities.forEach((activity, index) => {
-        const newActivity = document.createElement("div");
-        newActivity.className = "activity-card";
+function save(){
+localStorage.setItem("activities",JSON.stringify(activities))
+}
 
-        newActivity.innerHTML = `
-          <div class="activity-content">
-            <strong>${activity.name}</strong>
-            <div class="activity-meta">${activity.place} • ${activity.time}</div>
-          </div>
-          <button class="delete-button" onclick="deleteActivity(${index})">Smazat</button>
-        `;
+function showForm(){
+document.getElementById("form").style.display="block"
+}
 
-        activityList.appendChild(newActivity);
-      });
-    }
+function render(){
 
-    function saveActivity() {
-      const name = document.getElementById("activityName").value.trim();
-      const place = document.getElementById("activityPlace").value.trim();
-      const time = document.getElementById("activityTime").value;
+const list=document.getElementById("list")
+list.innerHTML=""
 
-      if (name === "" || place === "" || time === "") {
-        alert("Vyplň všechna pole.");
-        return;
-      }
+if(activities.length===0){
 
-      const newActivity = {
-        name: name,
-        place: place,
-        time: time
-      };
+list.innerHTML='<div class="empty">Zatím tu není žádná aktivita.</div>'
+return
 
-      activities.push(newActivity);
-      saveActivitiesToStorage();
-      renderActivities();
-      clearForm();
-      hideForm();
-    }
+}
 
-    function deleteActivity(index) {
-      activities.splice(index, 1);
-      saveActivitiesToStorage();
-      renderActivities();
-    }
+activities.forEach((a,i)=>{
 
-    renderActivities();
-  </script>
+const div=document.createElement("div")
+div.className="activity"
+
+div.innerHTML=`
+
+<div>
+
+<strong>${a.name}</strong>
+
+<div class="meta">
+<a target="_blank" href="https://www.google.com/maps/search/${a.place}">
+${a.place}
+</a>
+• ${a.time}
+</div>
+
+<div class="people">
+👥 ${a.people} / ${a.limit} lidí
+</div>
+
+</div>
+
+<div class="buttons">
+
+<button class="join" onclick="join(${i})">
+Připojit se
+</button>
+
+<button class="delete" onclick="removeActivity(${i})">
+Smazat
+</button>
+
+</div>
+
+`
+
+list.appendChild(div)
+
+})
+
+}
+
+function addActivity(){
+
+const name=document.getElementById("name").value
+const place=document.getElementById("place").value
+const time=document.getElementById("time").value
+const limit=document.getElementById("limit").value
+
+if(!name||!place||!time||!limit){
+alert("Vyplň všechna pole")
+return
+}
+
+activities.push({
+
+name:name,
+place:place,
+time:time,
+limit:limit,
+people:0
+
+})
+
+save()
+render()
+
+document.getElementById("form").style.display="none"
+
+document.getElementById("name").value=""
+document.getElementById("place").value=""
+document.getElementById("time").value=""
+document.getElementById("limit").value=""
+
+}
+
+function join(i){
+
+if(activities[i].people>=activities[i].limit){
+alert("Aktivita je plná")
+return
+}
+
+activities[i].people++
+
+save()
+render()
+
+}
+
+function removeActivity(i){
+
+activities.splice(i,1)
+
+save()
+render()
+
+}
+
+render()
+
+</script>
 
 </body>
 </html>
