@@ -1,0 +1,917 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Co se děje dnes</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f3f4f6;
+      color: #111827;
+    }
+
+    .menu-button {
+      position: fixed;
+      top: 18px;
+      left: 18px;
+      z-index: 1100;
+      width: 52px;
+      height: 52px;
+      border: none;
+      border-radius: 14px;
+      background: white;
+      color: #111827;
+      font-size: 28px;
+      cursor: pointer;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    }
+
+    .sidebar-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.35);
+      z-index: 1050;
+      display: none;
+    }
+
+    .sidebar-overlay.open {
+      display: block;
+    }
+
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: -320px;
+      width: 300px;
+      max-width: 85vw;
+      height: 100vh;
+      background: white;
+      z-index: 1200;
+      box-shadow: 10px 0 30px rgba(0, 0, 0, 0.15);
+      transition: left 0.25s ease;
+      padding: 24px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .sidebar.open {
+      left: 0;
+    }
+
+    .sidebar-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 18px;
+    }
+
+    .sidebar-title {
+      font-size: 24px;
+      font-weight: 700;
+    }
+
+    .close-sidebar {
+      border: none;
+      background: #f3f4f6;
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      font-size: 22px;
+      cursor: pointer;
+    }
+
+    .sidebar-link {
+      display: block;
+      width: 100%;
+      text-align: left;
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 14px 16px;
+      font-size: 16px;
+      color: #111827;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .sidebar-link:hover {
+      background: #f3f4f6;
+    }
+
+    .sidebar-note {
+      margin-top: 14px;
+      font-size: 13px;
+      color: #6b7280;
+      line-height: 1.5;
+    }
+
+    .hero {
+      position: relative;
+      min-height: 420px;
+      background-image: url("https://images.unsplash.com/photo-1517457373958-b7bdd4587205?auto=format&fit=crop&w=1600&q=80");
+      background-size: cover;
+      background-position: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 40px 20px;
+    }
+
+    .hero::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.35);
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 1;
+      color: white;
+      max-width: 800px;
+      padding-top: 24px;
+    }
+
+    .hero-content h1 {
+      font-size: 56px;
+      margin: 0 0 12px 0;
+    }
+
+    .hero-content p {
+      font-size: 22px;
+      margin: 0;
+    }
+
+    .section {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 50px 20px 20px;
+    }
+
+    .section h2 {
+      font-size: 34px;
+      margin: 0 0 16px 0;
+    }
+
+    .section-subtitle {
+      color: #6b7280;
+      margin: 0 0 24px 0;
+      font-size: 18px;
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 18px;
+    }
+
+    .info-card {
+      background: white;
+      border-radius: 16px;
+      padding: 22px;
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.06);
+    }
+
+    .info-card h3 {
+      margin: 0 0 10px 0;
+      font-size: 20px;
+    }
+
+    .info-card p {
+      margin: 0;
+      color: #6b7280;
+      line-height: 1.5;
+    }
+
+    .container {
+      max-width: 760px;
+      margin: 32px auto 60px;
+      background: white;
+      border-radius: 18px;
+      padding: 30px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+    }
+
+    .container h2 {
+      margin: 0 0 10px 0;
+      font-size: 38px;
+    }
+
+    .container p {
+      color: #6b7280;
+      margin: 0 0 20px 0;
+      font-size: 18px;
+    }
+
+    .field-label {
+      display: block;
+      margin-top: 8px;
+      margin-bottom: 6px;
+      font-size: 15px;
+      font-weight: 600;
+      color: #111827;
+    }
+
+    .small-note {
+      margin-top: 8px;
+      margin-bottom: 6px;
+      font-size: 13px;
+      color: #6b7280;
+      line-height: 1.4;
+    }
+
+    input,
+    select {
+      width: 100%;
+      padding: 14px;
+      margin-top: 10px;
+      border: 1px solid #d1d5db;
+      border-radius: 12px;
+      font-size: 16px;
+      background: white;
+      color: #111827;
+    }
+
+    button {
+      border: none;
+      border-radius: 12px;
+      padding: 12px 18px;
+      font-size: 15px;
+      cursor: pointer;
+    }
+
+    .addBtn {
+      background: black;
+      color: white;
+      margin-top: 12px;
+      margin-bottom: 10px;
+    }
+
+    .saveBtn {
+      background: black;
+      color: white;
+      margin-top: 12px;
+    }
+
+    .joinBtn {
+      background: black;
+      color: white;
+    }
+
+    .waBtn {
+      background: #25D366;
+      color: white;
+    }
+
+    .deleteBtn {
+      background: #ef4444;
+      color: white;
+    }
+
+    .time-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .form {
+      display: none;
+      margin-top: 14px;
+    }
+
+    .hint-box {
+      margin-top: 20px;
+      border: 1px solid #e5e7eb;
+      background: #fafafa;
+      border-radius: 12px;
+      padding: 14px;
+      color: #4b5563;
+      font-size: 14px;
+    }
+
+    .filter-box {
+      margin-top: 18px;
+      margin-bottom: 10px;
+    }
+
+    .empty-box {
+      margin-top: 20px;
+      border: 1px dashed #d1d5db;
+      border-radius: 12px;
+      padding: 18px;
+      text-align: center;
+      color: #6b7280;
+      background: #fafafa;
+    }
+
+    .card {
+      margin-top: 14px;
+      border: 1px solid #e5e7eb;
+      border-radius: 14px;
+      padding: 18px;
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      align-items: center;
+    }
+
+    .card-left {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .card-title {
+      font-size: 28px;
+      font-weight: 700;
+      margin: 0 0 8px 0;
+      text-transform: none;
+    }
+
+    .meta {
+      color: #4b5563;
+      line-height: 1.5;
+      font-size: 18px;
+    }
+
+    .meta a {
+      color: #2563eb;
+      text-decoration: none;
+    }
+
+    .meta a:hover {
+      text-decoration: underline;
+    }
+
+    .people {
+      margin-top: 10px;
+      font-size: 16px;
+      color: #111827;
+      line-height: 1.5;
+    }
+
+    .author {
+      margin-top: 6px;
+      font-size: 14px;
+      color: #6b7280;
+    }
+
+    .button-column {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      min-width: 140px;
+    }
+
+    .about-box {
+      background: white;
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.06);
+      color: #4b5563;
+      line-height: 1.7;
+    }
+
+    @media (max-width: 768px) {
+      .hero {
+        min-height: 320px;
+      }
+
+      .hero-content h1 {
+        font-size: 40px;
+      }
+
+      .hero-content p {
+        font-size: 18px;
+      }
+
+      .container {
+        margin: 24px 16px 50px;
+        padding: 22px;
+      }
+
+      .container h2 {
+        font-size: 30px;
+      }
+
+      .card {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .button-column {
+        width: 100%;
+      }
+
+      .card-title {
+        font-size: 22px;
+      }
+
+      .meta {
+        font-size: 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <button class="menu-button" onclick="openSidebar()">☰</button>
+
+  <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-top">
+      <div class="sidebar-title">Menu</div>
+      <button class="close-sidebar" onclick="closeSidebar()">×</button>
+    </div>
+
+    <button class="sidebar-link" onclick="goToSection('home')">Domů</button>
+    <button class="sidebar-link" onclick="goToSection('how-it-works')">Jak to funguje</button>
+    <button class="sidebar-link" onclick="goToSection('app')">Aktivity</button>
+    <button class="sidebar-link" onclick="openCreateFromMenu()">Vytvořit aktivitu</button>
+    <button class="sidebar-link" onclick="goToSection('about')">O aplikaci</button>
+
+    <div class="sidebar-note">
+      Postupně sem můžeš přidat profil, nastavení účtu, moje aktivity nebo oblíbené sporty.
+    </div>
+  </aside>
+
+  <section class="hero" id="home">
+    <div class="hero-content">
+      <h1>Co se děje dnes</h1>
+      <p>Najdi lidi na sport, výlet, pivo nebo cokoliv dalšího ve svém okolí.</p>
+    </div>
+  </section>
+
+  <section class="section" id="how-it-works">
+    <h2>Jak to funguje</h2>
+    <p class="section-subtitle">Najdi lidi na aktivitu ještě dnes.</p>
+
+    <div class="info-grid">
+      <div class="info-card">
+        <h3>1. Najdi aktivitu</h3>
+        <p>Projdi si aktuální aktivity a otevři si místo rovnou v mapě.</p>
+      </div>
+
+      <div class="info-card">
+        <h3>2. Připoj se</h3>
+        <p>Jedním klikem se přidáš k aktivitě a ostatní uvidí, že jdeš taky.</p>
+      </div>
+
+      <div class="info-card">
+        <h3>3. Vytvoř vlastní</h3>
+        <p>Přidej vlastní aktivitu a pozvi ostatní třeba přes WhatsApp.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="container" id="app">
+    <h2>Aktivity</h2>
+    <p>Vyber si aktivitu nebo vytvoř vlastní.</p>
+
+    <label for="username" class="field-label">Tvoje jméno pro připojení k aktivitám</label>
+    <input id="username" placeholder="Např. Vojta">
+    <div class="small-note">
+      Tohle jméno uvidí ostatní, když se připojíš k aktivitě nebo vytvoříš vlastní.
+    </div>
+
+    <button class="addBtn" onclick="showForm()">Přidat aktivitu</button>
+
+    <div class="form" id="form">
+      <div class="small-note">
+        Aktivita se vytvoří pod jménem, které máš vyplněné nahoře.
+      </div>
+
+      <input id="name" placeholder="Název aktivity (např. tenis, padel, běh)">
+      <input id="place" placeholder="Místo (např. Průhonický park)">
+      <input id="date" type="date">
+
+      <div class="time-row">
+        <select id="hour">
+          <option value="">Hodina</option>
+          <option value="00">00</option>
+          <option value="01">01</option>
+          <option value="02">02</option>
+          <option value="03">03</option>
+          <option value="04">04</option>
+          <option value="05">05</option>
+          <option value="06">06</option>
+          <option value="07">07</option>
+          <option value="08">08</option>
+          <option value="09">09</option>
+          <option value="10">10</option>
+          <option value="11">11</option>
+          <option value="12">12</option>
+          <option value="13">13</option>
+          <option value="14">14</option>
+          <option value="15">15</option>
+          <option value="16">16</option>
+          <option value="17">17</option>
+          <option value="18">18</option>
+          <option value="19">19</option>
+          <option value="20">20</option>
+          <option value="21">21</option>
+          <option value="22">22</option>
+          <option value="23">23</option>
+        </select>
+
+        <select id="minute">
+          <option value="">Minuta</option>
+          <option value="00">00</option>
+          <option value="05">05</option>
+          <option value="10">10</option>
+          <option value="15">15</option>
+          <option value="20">20</option>
+          <option value="25">25</option>
+          <option value="30">30</option>
+          <option value="35">35</option>
+          <option value="40">40</option>
+          <option value="45">45</option>
+          <option value="50">50</option>
+          <option value="55">55</option>
+        </select>
+      </div>
+
+      <input id="limit" type="number" placeholder="Max lidí">
+      <button class="saveBtn" onclick="addActivity()">Uložit</button>
+    </div>
+
+    <div class="hint-box">
+      📍 Klikni na místo u aktivity a na mapě uvidíš lokaci.
+    </div>
+
+    <div class="filter-box">
+      <label for="filterCategory" class="field-label">Filtrovat podle názvu aktivity</label>
+      <select id="filterCategory">
+        <option value="Vše">Všechny aktivity</option>
+        <option value="Padel">Padel</option>
+        <option value="Tenis">Tenis</option>
+        <option value="Běh">Běh</option>
+        <option value="Fotbal">Fotbal</option>
+        <option value="Kolo">Kolo</option>
+        <option value="Turistika">Turistika</option>
+        <option value="Jiné">Jiné</option>
+      </select>
+    </div>
+
+    <div id="activities"></div>
+  </section>
+
+  <section class="section" id="about">
+    <h2>O aplikaci</h2>
+    <div class="about-box">
+      Tahle aplikace pomáhá lidem rychle najít parťáky na sport i další volnočasové aktivity.
+      Cíl je jednoduchý: otevřeš web, najdeš aktivitu a během pár sekund víš, kdo jde, kde se to koná a jak se přidat.
+    </div>
+  </section>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import {
+      getFirestore,
+      collection,
+      addDoc,
+      onSnapshot,
+      deleteDoc,
+      doc,
+      updateDoc
+    } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAdgadZzLOidx-BumttNy4GeI7u8ggjIFI",
+      authDomain: "co-se-dnes-deje.firebaseapp.com",
+      projectId: "co-se-dnes-deje",
+      storageBucket: "co-se-dnes-deje.appspot.com",
+      messagingSenderId: "184158833468",
+      appId: "1:184158833468:web:224e91a5a82f2b6bc4ec39"
+    };
+
+    const PUBLIC_URL = "https://vojtab60.github.io/moje-webovka/";
+    const DELETE_AFTER_HOURS = 3;
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    const activitiesDiv = document.getElementById("activities");
+    const usernameInput = document.getElementById("username");
+    
+
+if (savedName) {
+  usernameInput.value = savedName;
+}
+
+usernameInput.addEventListener("input", () => {
+  localStorage.setItem("username", usernameInput.value);
+});
+    const filterCategory = document.getElementById("filterCategory");
+    const sidebar = document.getElementById("sidebar");
+    const sidebarOverlay = document.getElementById("sidebarOverlay");
+
+    let allActivities = [];
+    let selectedCategory = "Vše";
+
+    const savedName = localStorage.getItem("username");
+    if (savedName) {
+      usernameInput.value = savedName;
+    }
+
+    usernameInput.addEventListener("input", () => {
+      localStorage.setItem("username", usernameInput.value);
+    });
+
+    filterCategory.addEventListener("change", () => {
+      selectedCategory = filterCategory.value;
+      renderActivities();
+    });
+
+    function openSidebar() {
+      sidebar.classList.add("open");
+      sidebarOverlay.classList.add("open");
+    }
+
+    function closeSidebar() {
+      sidebar.classList.remove("open");
+      sidebarOverlay.classList.remove("open");
+    }
+
+    function goToSection(id) {
+      closeSidebar();
+      document.getElementById(id).scrollIntoView({ behavior: "smooth" });
+    }
+
+    function openCreateFromMenu() {
+      closeSidebar();
+      document.getElementById("app").scrollIntoView({ behavior: "smooth" });
+      setTimeout(() => {
+        showForm();
+      }, 300);
+    }
+
+    window.openSidebar = openSidebar;
+    window.closeSidebar = closeSidebar;
+    window.goToSection = goToSection;
+    window.openCreateFromMenu = openCreateFromMenu;
+
+    function showForm() {
+      document.getElementById("form").style.display = "block";
+    }
+    window.showForm = showForm;
+
+    function formatDate(date) {
+      if (!date) return "";
+      const [y, m, d] = date.split("-");
+      return `${d}.${m}.${y}`;
+    }
+
+    function getTimestampFromParts(date, time) {
+      if (!date || !time) return 0;
+
+      const [year, month, day] = date.split("-").map(Number);
+      const [hour, minute] = time.split(":").map(Number);
+
+      return new Date(year, month - 1, day, hour, minute, 0, 0).getTime();
+    }
+
+    function getActivityTimestamp(activity) {
+      return getTimestampFromParts(activity.date, activity.time);
+    }
+
+    function getDeleteTimestamp(activity) {
+      const start = getActivityTimestamp(activity);
+      const hoursMs = DELETE_AFTER_HOURS * 60 * 60 * 1000;
+      return start + hoursMs;
+    }
+
+    function isVisibleActivity(activity) {
+      return getDeleteTimestamp(activity) >= Date.now();
+    }
+
+    function shouldDeleteActivity(activity) {
+      return getDeleteTimestamp(activity) < Date.now();
+    }
+
+    function getPeopleArray(activity) {
+      if (Array.isArray(activity.people)) return activity.people;
+      if (typeof activity.people === "number") return [];
+      return [];
+    }
+
+    function getActivityTypeFromName(name) {
+      const value = (name || "").toLowerCase();
+
+      if (value.includes("padel")) return "Padel";
+      if (value.includes("tenis")) return "Tenis";
+      if (value.includes("běh") || value.includes("beh")) return "Běh";
+      if (value.includes("fotbal")) return "Fotbal";
+      if (value.includes("kolo")) return "Kolo";
+      if (value.includes("turistika")) return "Turistika";
+
+      return "Jiné";
+    }
+
+    function buildWhatsAppText(activity) {
+      const people = getPeopleArray(activity);
+
+      return `Pojď se přidat na aktivitu
+
+${activity.name}
+Typ: ${getActivityTypeFromName(activity.name)}
+Místo: ${activity.place}
+Datum: ${formatDate(activity.date)}
+Čas: ${activity.time}
+Lidé: ${people.length}/${activity.limit}
+
+${PUBLIC_URL}`;
+    }
+
+    function shareToWhatsApp(activity) {
+      const text = buildWhatsAppText(activity);
+      const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(text)}`;
+      window.open(whatsappUrl, "_blank");
+    }
+
+    async function cleanupOldActivities(activities) {
+      const oldActivities = activities.filter(shouldDeleteActivity);
+
+      for (const activity of oldActivities) {
+        try {
+          await deleteDoc(doc(db, "activities", activity.id));
+        } catch (error) {
+          console.error("Nepodařilo se smazat starou aktivitu:", error);
+        }
+      }
+    }
+
+    window.addActivity = async () => {
+      const user = document.getElementById("username").value.trim();
+      const name = document.getElementById("name").value.trim();
+      const place = document.getElementById("place").value.trim();
+      const date = document.getElementById("date").value;
+      const hour = document.getElementById("hour").value;
+      const minute = document.getElementById("minute").value;
+      const limit = document.getElementById("limit").value;
+
+      const time = `${hour}:${minute}`;
+
+      if (!user || !name || !place || !date || !hour || !minute || !limit) {
+        alert("Vyplň všechna pole.");
+        return;
+      }
+
+      const activityTimestamp = getTimestampFromParts(date, time);
+      const deleteAfterMs = DELETE_AFTER_HOURS * 60 * 60 * 1000;
+
+      if (activityTimestamp + deleteAfterMs < Date.now()) {
+        alert("Tahle aktivita už proběhla před více než 3 hodinami, takže ji nejde uložit.");
+        return;
+      }
+
+      await addDoc(collection(db, "activities"), {
+        name,
+        place,
+        date,
+        time,
+        limit: Number(limit),
+        people: [user],
+        author: user
+      });
+
+      document.getElementById("name").value = "";
+      document.getElementById("place").value = "";
+      document.getElementById("date").value = "";
+      document.getElementById("hour").value = "";
+      document.getElementById("minute").value = "";
+      document.getElementById("limit").value = "";
+      document.getElementById("form").style.display = "none";
+    };
+
+    function renderActivities() {
+      activitiesDiv.innerHTML = "";
+
+      let activities = allActivities
+        .filter(isVisibleActivity)
+        .sort((a, b) => getActivityTimestamp(a) - getActivityTimestamp(b));
+
+      if (selectedCategory !== "Vše") {
+        activities = activities.filter(activity =>
+          getActivityTypeFromName(activity.name) === selectedCategory
+        );
+      }
+
+      if (activities.length === 0) {
+        activitiesDiv.innerHTML = `<div class="empty-box">Pro tento filtr tu nejsou žádné aktivity.</div>`;
+        return;
+      }
+
+      activities.forEach((data) => {
+        const id = data.id;
+        const people = getPeopleArray(data);
+        const detectedType = getActivityTypeFromName(data.name);
+
+        const div = document.createElement("div");
+        div.className = "card";
+
+        const placeUrl = `https://www.google.com/maps/search/${encodeURIComponent(data.place)}`;
+
+        div.innerHTML = `
+          <div class="card-left">
+            <div class="card-title">${data.name}</div>
+
+            <div class="meta">
+              ${detectedType} •
+              <a href="${placeUrl}" target="_blank">${data.place}</a>
+              • ${formatDate(data.date)}
+              • ${data.time}
+            </div>
+
+            <div class="people">
+              👥 ${people.length}/${data.limit} lidí<br>
+              ${people.join(", ")}
+            </div>
+
+            <div class="author">👤 Organizátor: ${data.author}</div>
+          </div>
+
+          <div class="button-column">
+            <button class="joinBtn">
+  ${people.includes(usernameInput.value.trim()) ? "Opustit" : "Připojit se"}
+</button>
+            <button class="waBtn">WhatsApp</button>
+            <button class="deleteBtn">Smazat</button>
+          </div>
+        `;
+
+        div.querySelector(".joinBtn").onclick = async () => {
+
+  const username = usernameInput.value.trim();
+
+  if (!username) {
+    alert("Nejdřív napiš své jméno nahoře.");
+    return;
+  }
+
+  if (people.includes(username)) {
+
+    const newPeople = people.filter(p => p !== username);
+
+    await updateDoc(doc(db, "activities", id), {
+      people: newPeople
+    });
+
+    return;
+  }
+
+  if (people.length >= data.limit) {
+    alert("Aktivita je plná.");
+    return;
+  }
+
+  const newPeople = [...people, username];
+
+  await updateDoc(doc(db, "activities", id), {
+    people: newPeople
+  });
+
+};
+        
+
+        div.querySelector(".waBtn").onclick = () => {
+          shareToWhatsApp(data);
+        };
+
+        div.querySelector(".deleteBtn").onclick = async () => {
+          await deleteDoc(doc(db, "activities", id));
+        };
+
+        activitiesDiv.appendChild(div);
+      });
+    }
+
+    onSnapshot(collection(db, "activities"), async (snapshot) => {
+      allActivities = [];
+
+      snapshot.forEach((docSnap) => {
+        const data = docSnap.data();
+        const id = docSnap.id;
+        allActivities.push({ id, ...data });
+      });
+
+      await cleanupOldActivities(allActivities);
+      renderActivities();
+    });
+  </script>
+
+</body>
+</html>
