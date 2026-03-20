@@ -1,51 +1,334 @@
+
+
 <!DOCTYPE html>
 <html lang="cs">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Co se děje dnes</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Zuno</title>
 
   <style>
     * {
       box-sizing: border-box;
+      scroll-behavior: smooth;
     }
 
-    html {
-      scroll-behavior: smooth;
+    :root {
+      --bg: #f6f8fc;
+      --card: #ffffff;
+      --text: #0f172a;
+      --muted: #64748b;
+      --border: #e2e8f0;
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --dark: #0f172a;
+      --shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
+      --radius: 22px;
     }
 
     body {
       margin: 0;
       font-family: Arial, sans-serif;
-      background: #f3f4f6;
-      color: #111827;
+      background: linear-gradient(180deg, #f8fbff 0%, #f6f8fc 100%);
+      color: var(--text);
     }
 
-    .menu-button {
-      position: fixed;
-      top: 18px;
-      left: 18px;
-      z-index: 1100;
-      width: 52px;
-      height: 52px;
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 18px 24px;
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .top-left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .menu-btn {
+      width: 46px;
+      height: 46px;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      background: white;
+      font-size: 22px;
+      cursor: pointer;
+      box-shadow: var(--shadow);
+    }
+
+    .brand {
+      font-size: 28px;
+      font-weight: 800;
+      letter-spacing: 0.3px;
+    }
+
+    .top-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .nav-btn {
+      border: 1px solid var(--border);
+      background: white;
+      color: var(--text);
+      border-radius: 14px;
+      padding: 11px 16px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: var(--shadow);
+    }
+
+    .nav-btn.primary {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+
+    .nav-btn.primary:hover {
+      background: var(--primary-hover);
+    }
+
+    .hero {
+      max-width: 1250px;
+      margin: 0 auto;
+      padding: 54px 24px 28px;
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 28px;
+      align-items: center;
+    }
+
+    .hero-copy h1 {
+      margin: 0 0 18px;
+      font-size: 62px;
+      line-height: 1.02;
+      letter-spacing: -1px;
+    }
+
+    .hero-copy p {
+      margin: 0 0 24px;
+      max-width: 760px;
+      font-size: 20px;
+      line-height: 1.65;
+      color: var(--muted);
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+
+    .hero-note {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    .btn-main,
+    .btn-ghost {
       border: none;
       border-radius: 14px;
-      background: white;
-      color: #111827;
-      font-size: 28px;
+      padding: 14px 18px;
+      font-size: 15px;
+      font-weight: 700;
       cursor: pointer;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    }
+
+    .btn-main {
+      background: var(--primary);
+      color: white;
+      box-shadow: var(--shadow);
+    }
+
+    .btn-main:hover {
+      background: var(--primary-hover);
+    }
+
+    .btn-ghost {
+      background: white;
+      color: var(--text);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+    }
+
+    .hero-visual {
+      display: grid;
+      gap: 14px;
+    }
+
+    .visual-card {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 16px;
+      box-shadow: var(--shadow);
+    }
+
+    .visual-image {
+      height: 180px;
+      border-radius: 18px;
+      background:
+        linear-gradient(135deg, rgba(37,99,235,0.14), rgba(59,130,246,0.04)),
+        url("https://images.unsplash.com/photo-1517649763962-0c623066013b?auto=format&fit=crop&w=1200&q=80") center/cover;
+      margin-bottom: 14px;
+    }
+
+    .mini-activities {
+      display: grid;
+      gap: 10px;
+    }
+
+    .mini-activity {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      padding: 14px;
+      border-radius: 16px;
+      background: #f8fafc;
+      border: 1px solid var(--border);
+    }
+
+    .mini-activity strong {
+      display: block;
+      font-size: 17px;
+      margin-bottom: 4px;
+    }
+
+    .mini-activity span {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .mini-badge {
+      padding: 8px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      background: #dbeafe;
+      color: #1d4ed8;
+      white-space: nowrap;
+    }
+
+    .section {
+      max-width: 1250px;
+      margin: 0 auto;
+      padding: 42px 24px;
+    }
+
+    .section h2 {
+      margin: 0 0 10px;
+      font-size: 40px;
+      letter-spacing: -0.5px;
+    }
+
+    .section p.lead {
+      margin: 0 0 26px;
+      color: var(--muted);
+      font-size: 18px;
+      line-height: 1.7;
+      max-width: 820px;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 18px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      box-shadow: var(--shadow);
+    }
+
+    .step {
+      display: inline-block;
+      margin-bottom: 12px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: #eff6ff;
+      color: #1d4ed8;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .card h3 {
+      margin: 0 0 10px;
+      font-size: 25px;
+    }
+
+    .card p {
+      margin: 0;
+      color: #475569;
+      line-height: 1.75;
+      font-size: 16px;
+    }
+
+    .about-box {
+      background: linear-gradient(135deg, #0f172a, #1e293b);
+      color: white;
+      border-radius: 28px;
+      padding: 34px;
+      box-shadow: 0 18px 50px rgba(15, 23, 42, 0.22);
+    }
+
+    .about-box h2 {
+      color: white;
+      margin-bottom: 10px;
+    }
+
+    .about-box p {
+      margin: 0;
+      font-size: 17px;
+      line-height: 1.8;
+      color: rgba(255,255,255,0.82);
+      max-width: 860px;
+    }
+
+    .footer {
+      text-align: center;
+      padding: 28px 20px 46px;
+      color: var(--muted);
+      font-size: 14px;
     }
 
     .sidebar-overlay {
       position: fixed;
       inset: 0;
-      background: rgba(0, 0, 0, 0.35);
-      z-index: 1050;
+      background: rgba(15, 23, 42, 0.45);
       display: none;
+      z-index: 50;
     }
 
-    .sidebar-overlay.open {
+    .sidebar-overlay.active {
       display: block;
     }
 
@@ -54,1040 +337,642 @@
       top: 0;
       left: -320px;
       width: 300px;
-      max-width: 85vw;
       height: 100vh;
       background: white;
-      z-index: 1200;
-      box-shadow: 10px 0 30px rgba(0, 0, 0, 0.15);
+      border-right: 1px solid var(--border);
+      box-shadow: 10px 0 30px rgba(15, 23, 42, 0.15);
+      z-index: 60;
       transition: left 0.25s ease;
-      padding: 24px 20px;
+      padding: 22px 18px;
       display: flex;
       flex-direction: column;
-      gap: 10px;
-      overflow-y: auto;
     }
 
-    .sidebar.open {
+    .sidebar.active {
       left: 0;
     }
 
     .sidebar-top {
       display: flex;
-      justify-content: space-between;
       align-items: center;
+      justify-content: space-between;
       margin-bottom: 18px;
     }
 
     .sidebar-title {
-      font-size: 24px;
-      font-weight: 700;
+      font-size: 26px;
+      font-weight: 800;
     }
 
     .close-sidebar {
-      border: none;
-      background: #f3f4f6;
       width: 40px;
       height: 40px;
-      border-radius: 10px;
-      font-size: 22px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: white;
       cursor: pointer;
+      font-size: 18px;
+    }
+
+    .sidebar-user {
+      display: none;
+      align-items: center;
+      gap: 12px;
+      padding: 14px;
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      margin-bottom: 18px;
+    }
+
+    .sidebar-user img {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      object-fit: cover;
+      background: #e5e7eb;
+    }
+
+    .sidebar-user strong {
+      display: block;
+      font-size: 15px;
+      margin-bottom: 3px;
+    }
+
+    .sidebar-user span {
+      font-size: 13px;
+      color: var(--muted);
     }
 
     .sidebar-link {
-      display: block;
-      width: 100%;
-      text-align: left;
-      background: #f9fafb;
-      border: 1px solid #e5e7eb;
-      border-radius: 12px;
-      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 15px 16px;
+      border-radius: 16px;
+      color: #0f172a;
       font-size: 16px;
-      color: #111827;
-      text-decoration: none;
-      cursor: pointer;
+      font-weight: 700;
+      margin-bottom: 10px;
+      background: #f8fafc;
+      border: 1px solid var(--border);
     }
 
     .sidebar-link:hover {
-      background: #f3f4f6;
+      background: #eef4ff;
     }
 
-    .sidebar-note {
-      margin-top: 14px;
-      font-size: 13px;
-      color: #6b7280;
-      line-height: 1.5;
+    .sidebar-bottom {
+      margin-top: auto;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
     }
 
-    .hero {
-      position: relative;
-      min-height: 420px;
-      background-image: url("https://images.unsplash.com/photo-1517457373958-b7bdd4587205?auto=format&fit=crop&w=1600&q=80");
-      background-size: cover;
-      background-position: center;
+    .gear-link {
       display: flex;
       align-items: center;
-      justify-content: center;
-      text-align: center;
-      padding: 40px 20px;
-    }
-
-    .hero::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.35);
-    }
-
-    .hero-content {
-      position: relative;
-      z-index: 1;
-      color: white;
-      max-width: 800px;
-      padding-top: 24px;
-    }
-
-    .hero-content h1 {
-      font-size: 56px;
-      margin: 0 0 12px 0;
-    }
-
-    .hero-content p {
-      font-size: 22px;
-      margin: 0;
-    }
-
-    .section {
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 50px 20px 20px;
-    }
-
-    .section h2 {
-      font-size: 34px;
-      margin: 0 0 16px 0;
-    }
-
-    .section-subtitle {
-      color: #6b7280;
-      margin: 0 0 24px 0;
-      font-size: 18px;
-    }
-
-    .info-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 18px;
-    }
-
-    .info-card,
-    .about-box {
-      background: white;
+      gap: 12px;
+      padding: 15px 16px;
       border-radius: 16px;
-      padding: 22px;
-      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.06);
-    }
-
-    .info-card h3 {
-      margin: 0 0 10px 0;
-      font-size: 20px;
-    }
-
-    .info-card p,
-    .about-box {
-      margin: 0;
-      color: #6b7280;
-      line-height: 1.5;
-    }
-
-    .container {
-      max-width: 760px;
-      margin: 32px auto 60px;
-      background: white;
-      border-radius: 18px;
-      padding: 30px;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
-    }
-
-    .container h2 {
-      margin: 0 0 10px 0;
-      font-size: 38px;
-    }
-
-    .container p {
-      color: #6b7280;
-      margin: 0 0 20px 0;
-      font-size: 18px;
-    }
-
-    .field-label {
-      display: block;
-      margin-top: 8px;
-      margin-bottom: 6px;
-      font-size: 15px;
-      font-weight: 600;
-      color: #111827;
-    }
-
-    .small-note {
-      margin-top: 8px;
-      margin-bottom: 6px;
-      font-size: 13px;
-      color: #6b7280;
-      line-height: 1.4;
-    }
-
-    input,
-    select,
-    textarea {
-      width: 100%;
-      padding: 14px;
-      margin-top: 10px;
-      border: 1px solid #d1d5db;
-      border-radius: 12px;
-      font-size: 16px;
-      background: white;
-      color: #111827;
-      font-family: Arial, sans-serif;
-    }
-
-    textarea {
-      resize: vertical;
-      min-height: 90px;
-    }
-
-    button {
-      border: none;
-      border-radius: 12px;
-      padding: 12px 18px;
-      font-size: 15px;
-      cursor: pointer;
-    }
-
-    .addBtn {
-      background: black;
+      background: #0f172a;
       color: white;
-      margin-top: 12px;
-      margin-bottom: 10px;
+      font-weight: 700;
     }
 
-    .saveBtn {
-      background: black;
-      color: white;
-      margin-top: 12px;
-    }
-
-    .joinBtn {
-      background: black;
-      color: white;
-    }
-
-    .waBtn {
-      background: #25D366;
-      color: white;
-    }
-
-    .deleteBtn {
-      background: #ef4444;
-      color: white;
-    }
-
-    .editBtn {
-      background: #2563eb;
-      color: white;
-    }
-
-    .commentBtn {
-      background: #111827;
-      color: white;
-    }
-
-    .authorLink {
-      color: #2563eb;
-      cursor: pointer;
-      font-weight: 600;
-    }
-
-    .authorLink:hover {
-      text-decoration: underline;
-    }
-
-    .time-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-    }
-
-    .form {
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.5);
       display: none;
-      margin-top: 14px;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      z-index: 80;
     }
 
-    .hint-box {
-      margin-top: 20px;
-      border: 1px solid #e5e7eb;
-      background: #fafafa;
-      border-radius: 12px;
-      padding: 14px;
-      color: #4b5563;
-      font-size: 14px;
+    .modal-overlay.active {
+      display: flex;
     }
 
-    .filter-box {
-      margin-top: 18px;
-      margin-bottom: 10px;
+    .modal {
+      width: 100%;
+      max-width: 440px;
+      background: white;
+      border-radius: 24px;
+      padding: 28px;
+      border: 1px solid var(--border);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.16);
     }
 
-    .empty-box {
-      margin-top: 20px;
-      border: 1px dashed #d1d5db;
-      border-radius: 12px;
-      padding: 18px;
-      text-align: center;
-      color: #6b7280;
-      background: #fafafa;
+    .modal h3 {
+      margin: 0 0 8px;
+      font-size: 30px;
     }
 
-    .card {
-      margin-top: 14px;
-      border: 1px solid #e5e7eb;
+    .modal p {
+      margin: 0 0 18px;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    .google-btn {
+      width: 100%;
+      border: none;
       border-radius: 14px;
-      padding: 18px;
-    }
-
-    .card-top {
-      display: flex;
-      justify-content: space-between;
-      gap: 18px;
-      align-items: flex-start;
-    }
-
-    .card-left {
-      flex: 1;
-      min-width: 0;
-    }
-
-    .card-title {
-      font-size: 28px;
-      font-weight: 700;
-      margin: 0 0 8px 0;
-      text-transform: none;
-    }
-
-    .meta {
-      color: #4b5563;
-      line-height: 1.5;
-      font-size: 18px;
-    }
-
-    .meta a {
-      color: #2563eb;
-      text-decoration: none;
-    }
-
-    .meta a:hover {
-      text-decoration: underline;
-    }
-
-    .people {
-      margin-top: 10px;
-      font-size: 16px;
-      color: #111827;
-      line-height: 1.5;
-    }
-
-    .author {
-      margin-top: 6px;
-      font-size: 14px;
-      color: #6b7280;
-    }
-
-    .button-column {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      min-width: 140px;
-    }
-
-    .comments-box {
-      margin-top: 16px;
-      padding-top: 16px;
-      border-top: 1px solid #e5e7eb;
-    }
-
-    .comments-title {
+      padding: 15px 18px;
+      background: var(--primary);
+      color: white;
       font-size: 16px;
       font-weight: 700;
-      margin-bottom: 10px;
+      cursor: pointer;
     }
 
-    .comment-item {
-      background: #f9fafb;
-      border: 1px solid #e5e7eb;
-      border-radius: 12px;
-      padding: 10px 12px;
-      margin-bottom: 8px;
+    .google-btn:hover {
+      background: var(--primary-hover);
     }
 
-    .comment-author {
-      font-size: 14px;
-      font-weight: 700;
-      margin-bottom: 4px;
-    }
-
-    .comment-text {
-      font-size: 14px;
-      color: #4b5563;
-      line-height: 1.5;
-      white-space: pre-wrap;
-    }
-
-    .comment-form {
+    .close-modal-btn {
+      width: 100%;
       margin-top: 10px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px 18px;
+      background: white;
+      color: var(--text);
+      cursor: pointer;
     }
 
-    .comment-form textarea {
-      margin-top: 0;
-      min-height: 70px;
+    .status {
+      margin-top: 14px;
+      color: #475569;
+      font-size: 14px;
+      line-height: 1.6;
+      min-height: 20px;
     }
 
-    @media (max-width: 768px) {
+    @media (max-width: 1020px) {
       .hero {
-        min-height: 320px;
+        grid-template-columns: 1fr;
       }
 
-      .hero-content h1 {
-        font-size: 40px;
+      .hero-copy h1 {
+        font-size: 42px;
       }
 
-      .hero-content p {
-        font-size: 18px;
+      .grid-3,
+      .grid-2 {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 720px) {
+      .topbar {
+        padding: 16px 18px;
       }
 
-      .container {
-        margin: 24px 16px 50px;
-        padding: 22px;
+      .top-right {
+        gap: 8px;
       }
 
-      .container h2 {
-        font-size: 30px;
+      .nav-btn {
+        padding: 10px 12px;
+        font-size: 13px;
       }
 
-      .card-top {
-        flex-direction: column;
-        align-items: flex-start;
+      .hero {
+        padding: 36px 18px 18px;
       }
 
-      .button-column {
-        width: 100%;
+      .section {
+        padding: 32px 18px;
       }
 
-      .card-title {
-        font-size: 22px;
+      .hero-copy h1 {
+        font-size: 36px;
       }
 
-      .meta {
-        font-size: 16px;
+      .hero-copy p {
+        font-size: 17px;
       }
     }
   </style>
 </head>
 <body>
 
-  <button class="menu-button" onclick="openSidebar()">☰</button>
-
-  <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-top">
-      <div class="sidebar-title">Menu</div>
-      <button class="close-sidebar" onclick="closeSidebar()">×</button>
+      <div class="sidebar-title">Zuno</div>
+      <button class="close-sidebar" id="closeSidebarBtn">✕</button>
     </div>
 
-    <a class="sidebar-link" href="index.html">Domů</a>
-    <button class="sidebar-link" onclick="goToSection('how-it-works')">Jak to funguje</button>
-    <button class="sidebar-link" onclick="goToSection('app')">Aktivity</button>
-    <a class="sidebar-link" href="profil.html" onclick="localStorage.removeItem('selectedProfileName')">Profil</a>
-    <button class="sidebar-link" onclick="openCreateFromMenu()">Vytvořit aktivitu</button>
-    <button class="sidebar-link" onclick="goToSection('about')">O aplikaci</button>
+    <div class="sidebar-user" id="sidebarUser">
+      <img id="sidebarUserPhoto" src="https://via.placeholder.com/100x100.png?text=+" alt="Profil">
+      <div>
+        <strong id="sidebarUserName">Uživatel</strong>
+        <span id="sidebarUserEmail">email</span>
+      </div>
+    </div>
 
-    <div class="sidebar-note">
-      Tady už máš základ skutečné aplikace. Profil je teď jako samostatná stránka.
+    <a class="sidebar-link" href="app.html">🏃 Aktivity</a>
+    <a class="sidebar-link" href="app.html#sports">🎾 Všechny sporty</a>
+    <a class="sidebar-link" href="profil.html">👤 Profil</a>
+    <a class="sidebar-link" href="app.html#notifications">🔔 Notifikace</a>
+    <a class="sidebar-link" href="app.html#settings">⚙️ Nastavení</a>
+
+    <div class="sidebar-bottom">
+      <a class="gear-link" href="app.html#settings">⚙️ Nastavení</a>
     </div>
   </aside>
 
-  <section class="hero" id="home">
-    <div class="hero-content">
-      <h1>Co se děje dnes</h1>
-      <p>Najdi lidi na sport, výlet, pivo nebo cokoliv dalšího ve svém okolí.</p>
+  <header class="topbar">
+    <div class="top-left">
+      <button class="menu-btn" id="openSidebarBtn">☰</button>
+      <div class="brand">Zuno</div>
     </div>
-  </section>
 
-  <section class="section" id="how-it-works">
-    <h2>Jak to funguje</h2>
-    <p class="section-subtitle">Najdi lidi na aktivitu ještě dnes.</p>
+    <div class="top-right">
+      <button class="nav-btn secondary" id="howBtn">Jak to funguje</button>
+      <button class="nav-btn secondary" id="whyBtn">Proč Zuno</button>
 
-    <div class="info-grid">
-      <div class="info-card">
-        <h3>1. Najdi aktivitu</h3>
-        <p>Projdi si aktuální aktivity a otevři si místo rovnou v mapě.</p>
+      <div id="topUserBox" style="display:none;align-items:center;gap:10px;padding:7px 10px;border:1px solid var(--border);border-radius:999px;background:white;box-shadow:var(--shadow);">
+        <img id="topUserPhoto" src="https://via.placeholder.com/100x100.png?text=+" alt="Profil" style="width:34px;height:34px;border-radius:50%;object-fit:cover;background:#e5e7eb;">
+        <span id="topUserName" style="font-size:14px;font-weight:700;color:#334155;">Uživatel</span>
       </div>
 
-      <div class="info-card">
-        <h3>2. Připoj se</h3>
-        <p>Jedním klikem se přidáš k aktivitě a ostatní uvidí, že jdeš taky.</p>
+      <button class="nav-btn primary" id="loginTopBtn">Přihlásit se</button>
+      <button class="nav-btn secondary" id="profileTopBtn" style="display:none;">Profil</button>
+      <button class="nav-btn primary" id="appTopBtn" style="display:none;">Do aplikace</button>
+      <button class="nav-btn secondary" id="logoutTopBtn" style="display:none;">Odhlásit se</button>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="hero-copy">
+      <h1>Najdi lidi na sport a aktivity ve tvém okolí.</h1>
+      <p>
+        Zuno ti pomůže rychle najít parťáky na padel, tenis, běh nebo výlet. 
+        Všechno přehledně na jednom místě bez chaosu ve skupinách a bez nekonečných zpráv.
+      </p>
+
+      <div class="hero-actions">
+        <button class="btn-main" id="heroStartBtn">Začít zdarma</button>
+        <button class="btn-ghost" id="heroHowBtn">Jak to funguje</button>
       </div>
 
-      <div class="info-card">
-        <h3>3. Vytvoř vlastní</h3>
-        <p>Přidej vlastní aktivitu a pozvi ostatní třeba přes WhatsApp.</p>
+      <div class="hero-note">
+        Rychlé přihlášení přes Google, jednoduchý profil a jasný přehled aktivit, do kterých se můžeš hned přidat.
       </div>
     </div>
-  </section>
 
-  <section class="container" id="app">
-    <h2>Aktivity</h2>
-    <p>Vyber si aktivitu nebo vytvoř vlastní.</p>
+    <div class="hero-visual">
+      <div class="visual-card">
+        <div class="visual-image"></div>
 
-    <label for="username" class="field-label">Tvoje jméno pro připojení k aktivitám</label>
-    <input id="username" placeholder="Např. Vojta">
-    <div class="small-note">
-      Tohle jméno uvidí ostatní, když se připojíš k aktivitě, vytvoříš vlastní nebo přidáš komentář.
-    </div>
+        <div class="mini-activities">
+          <div class="mini-activity">
+            <div>
+              <strong>Padel dnes v 19:00</strong>
+              <span>Praha 4 • 4 hráči • Organizátor: Vojta</span>
+            </div>
+            <div class="mini-badge">2 volná místa</div>
+          </div>
 
-    <button class="addBtn" onclick="showForm()">Přidat aktivitu</button>
+          <div class="mini-activity">
+            <div>
+              <strong>Běh Stromovka</strong>
+              <span>Praha 7 • Zítra v 18:30</span>
+            </div>
+            <div class="mini-badge">Připojit</div>
+          </div>
 
-    <div class="form" id="form">
-      <div class="small-note">
-        Aktivita se vytvoří pod jménem, které máš vyplněné nahoře.
-      </div>
-
-      <input id="name" placeholder="Název aktivity (např. tenis, padel, běh)">
-      <input id="place" placeholder="Místo (např. Průhonický park)">
-      <input id="date" type="date">
-
-      <div class="time-row">
-        <select id="hour">
-          <option value="">Hodina</option>
-          <option value="00">00</option>
-          <option value="01">01</option>
-          <option value="02">02</option>
-          <option value="03">03</option>
-          <option value="04">04</option>
-          <option value="05">05</option>
-          <option value="06">06</option>
-          <option value="07">07</option>
-          <option value="08">08</option>
-          <option value="09">09</option>
-          <option value="10">10</option>
-          <option value="11">11</option>
-          <option value="12">12</option>
-          <option value="13">13</option>
-          <option value="14">14</option>
-          <option value="15">15</option>
-          <option value="16">16</option>
-          <option value="17">17</option>
-          <option value="18">18</option>
-          <option value="19">19</option>
-          <option value="20">20</option>
-          <option value="21">21</option>
-          <option value="22">22</option>
-          <option value="23">23</option>
-        </select>
-
-        <select id="minute">
-          <option value="">Minuta</option>
-          <option value="00">00</option>
-          <option value="05">05</option>
-          <option value="10">10</option>
-          <option value="15">15</option>
-          <option value="20">20</option>
-          <option value="25">25</option>
-          <option value="30">30</option>
-          <option value="35">35</option>
-          <option value="40">40</option>
-          <option value="45">45</option>
-          <option value="50">50</option>
-          <option value="55">55</option>
-        </select>
-      </div>
-
-      <input id="limit" type="number" placeholder="Max lidí">
-      <button class="saveBtn" onclick="addActivity()">Uložit</button>
-    </div>
-
-    <div class="hint-box">
-      📍 Klikni na místo u aktivity a na mapě uvidíš lokaci.
-    </div>
-
-    <div class="filter-box">
-      <label for="filterCategory" class="field-label">Filtrovat podle názvu aktivity</label>
-      <select id="filterCategory">
-        <option value="Vše">Všechny aktivity</option>
-        <option value="Padel">Padel</option>
-        <option value="Tenis">Tenis</option>
-        <option value="Běh">Běh</option>
-        <option value="Fotbal">Fotbal</option>
-        <option value="Kolo">Kolo</option>
-        <option value="Turistika">Turistika</option>
-        <option value="Jiné">Jiné</option>
-      </select>
-    </div>
-
-    <div id="activities"></div>
-  </section>
-
-  <section class="section" id="about">
-    <h2>O aplikaci</h2>
-    <div class="about-box">
-      Tahle aplikace pomáhá lidem rychle najít parťáky na sport i další volnočasové aktivity.
-      Cíl je jednoduchý: otevřeš web, najdeš aktivitu a během pár sekund víš, kdo jde, kde se to koná a jak se přidat.
-    </div>
-  </section>
-
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import {
-      getFirestore,
-      collection,
-      addDoc,
-      onSnapshot,
-      deleteDoc,
-      doc,
-      updateDoc
-    } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyAdgadZzLOidx-BumttNy4GeI7u8ggjIFI",
-      authDomain: "co-se-dnes-deje.firebaseapp.com",
-      projectId: "co-se-dnes-deje",
-      storageBucket: "co-se-dnes-deje.appspot.com",
-      messagingSenderId: "184158833468",
-      appId: "1:184158833468:web:224e91a5a82f2b6bc4ec39"
-    };
-
-    const PUBLIC_URL = "https://vojtab60.github.io/moje-webovka/";
-    const DELETE_AFTER_HOURS = 3;
-
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-
-    const activitiesDiv = document.getElementById("activities");
-    const usernameInput = document.getElementById("username");
-    const filterCategory = document.getElementById("filterCategory");
-    const sidebar = document.getElementById("sidebar");
-    const sidebarOverlay = document.getElementById("sidebarOverlay");
-
-    let allActivities = [];
-    let selectedCategory = "Vše";
-
-    const savedName = localStorage.getItem("username");
-    if (savedName) {
-      usernameInput.value = savedName;
-    }
-
-    usernameInput.addEventListener("input", () => {
-      localStorage.setItem("username", usernameInput.value);
-      renderActivities();
-    });
-
-    filterCategory.addEventListener("change", () => {
-      selectedCategory = filterCategory.value;
-      renderActivities();
-    });
-
-    function openSidebar() {
-      sidebar.classList.add("open");
-      sidebarOverlay.classList.add("open");
-    }
-
-    function closeSidebar() {
-      sidebar.classList.remove("open");
-      sidebarOverlay.classList.remove("open");
-    }
-
-    function goToSection(id) {
-      closeSidebar();
-      document.getElementById(id).scrollIntoView({ behavior: "smooth" });
-    }
-
-    function openCreateFromMenu() {
-      closeSidebar();
-      document.getElementById("app").scrollIntoView({ behavior: "smooth" });
-      setTimeout(() => {
-        showForm();
-      }, 300);
-    }
-
-    window.openSidebar = openSidebar;
-    window.closeSidebar = closeSidebar;
-    window.goToSection = goToSection;
-    window.openCreateFromMenu = openCreateFromMenu;
-
-    function showForm() {
-      document.getElementById("form").style.display = "block";
-    }
-    window.showForm = showForm;
-
-    function formatDate(date) {
-      if (!date) return "";
-      const [y, m, d] = date.split("-");
-      return `${d}.${m}.${y}`;
-    }
-
-    function getTimestampFromParts(date, time) {
-      if (!date || !time) return 0;
-      const [year, month, day] = date.split("-").map(Number);
-      const [hour, minute] = time.split(":").map(Number);
-      return new Date(year, month - 1, day, hour, minute, 0, 0).getTime();
-    }
-
-    function getActivityTimestamp(activity) {
-      return getTimestampFromParts(activity.date, activity.time);
-    }
-
-    function getDeleteTimestamp(activity) {
-      const start = getActivityTimestamp(activity);
-      const hoursMs = DELETE_AFTER_HOURS * 60 * 60 * 1000;
-      return start + hoursMs;
-    }
-
-    function isVisibleActivity(activity) {
-      return getDeleteTimestamp(activity) >= Date.now();
-    }
-
-    function shouldDeleteActivity(activity) {
-      return getDeleteTimestamp(activity) < Date.now();
-    }
-
-    function getPeopleArray(activity) {
-      if (Array.isArray(activity.people)) return activity.people;
-      if (typeof activity.people === "number") return [];
-      return [];
-    }
-
-    function getCommentsArray(activity) {
-      if (Array.isArray(activity.comments)) return activity.comments;
-      return [];
-    }
-
-    function getActivityTypeFromName(name) {
-      const value = (name || "").toLowerCase();
-
-      if (value.includes("padel")) return "Padel";
-      if (value.includes("tenis")) return "Tenis";
-      if (value.includes("běh") || value.includes("beh")) return "Běh";
-      if (value.includes("fotbal")) return "Fotbal";
-      if (value.includes("kolo")) return "Kolo";
-      if (value.includes("turistika") || value.includes("výlet") || value.includes("vylet")) return "Turistika";
-
-      return "Jiné";
-    }
-
-    function buildWhatsAppText(activity) {
-      const people = getPeopleArray(activity);
-
-      return `Pojď se přidat na aktivitu
-
-${activity.name}
-Typ: ${getActivityTypeFromName(activity.name)}
-Místo: ${activity.place}
-Datum: ${formatDate(activity.date)}
-Čas: ${activity.time}
-Lidé: ${people.length}/${activity.limit}
-
-${PUBLIC_URL}`;
-    }
-
-    function shareToWhatsApp(activity) {
-      const text = buildWhatsAppText(activity);
-      const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(text)}`;
-      window.open(whatsappUrl, "_blank");
-    }
-
-    async function cleanupOldActivities(activities) {
-      const oldActivities = activities.filter(shouldDeleteActivity);
-
-      for (const activity of oldActivities) {
-        try {
-          await deleteDoc(doc(db, "activities", activity.id));
-        } catch (error) {
-          console.error("Nepodařilo se smazat starou aktivitu:", error);
-        }
-      }
-    }
-
-    window.addActivity = async () => {
-      const user = usernameInput.value.trim();
-      const name = document.getElementById("name").value.trim();
-      const place = document.getElementById("place").value.trim();
-      const date = document.getElementById("date").value;
-      const hour = document.getElementById("hour").value;
-      const minute = document.getElementById("minute").value;
-      const limit = document.getElementById("limit").value;
-
-      const time = `${hour}:${minute}`;
-
-      if (!user || !name || !place || !date || !hour || !minute || !limit) {
-        alert("Vyplň všechna pole.");
-        return;
-      }
-
-      const activityTimestamp = getTimestampFromParts(date, time);
-      const deleteAfterMs = DELETE_AFTER_HOURS * 60 * 60 * 1000;
-
-      if (activityTimestamp + deleteAfterMs < Date.now()) {
-        alert("Tahle aktivita už proběhla před více než 3 hodinami, takže ji nejde uložit.");
-        return;
-      }
-
-      await addDoc(collection(db, "activities"), {
-        name,
-        place,
-        date,
-        time,
-        limit: Number(limit),
-        people: [],
-        author: user,
-        comments: []
-      });
-
-      document.getElementById("name").value = "";
-      document.getElementById("place").value = "";
-      document.getElementById("date").value = "";
-      document.getElementById("hour").value = "";
-      document.getElementById("minute").value = "";
-      document.getElementById("limit").value = "";
-      document.getElementById("form").style.display = "none";
-    };
-
-    function renderCommentList(comments) {
-      if (!comments.length) {
-        return `<div class="small-note">Zatím tu nejsou žádné komentáře.</div>`;
-      }
-
-      return comments.map(comment => `
-        <div class="comment-item">
-          <div class="comment-author">${comment.author}</div>
-          <div class="comment-text">${comment.text}</div>
+          <div class="mini-activity">
+            <div>
+              <strong>Tenisový sparing</strong>
+              <span>Praha 10 • Víkend</span>
+            </div>
+            <div class="mini-badge">Nová aktivita</div>
+          </div>
         </div>
-      `).join("");
-    }
+      </div>
+    </div>
+  </section>
 
-    function renderActivities() {
-      activitiesDiv.innerHTML = "";
+  <section class="section" id="howSection">
+    <h2>Jak to funguje</h2>
+    <p class="lead">
+      V několika jednoduchých krocích si najdeš aktivitu, připojíš se nebo vytvoříš vlastní a poznáš nové lidi přes sport.
+    </p>
 
-      let activities = allActivities
-        .filter(isVisibleActivity)
-        .sort((a, b) => getActivityTimestamp(a) - getActivityTimestamp(b));
+    <div class="grid-3">
+      <div class="card">
+        <div class="step">Krok 1</div>
+        <h3>Najdi aktivitu</h3>
+        <p>
+          Podíváš se, co se děje ve tvém okolí. Hned vidíš sport, místo, čas i kolik lidí už je přihlášených.
+        </p>
+      </div>
 
-      if (selectedCategory !== "Vše") {
-        activities = activities.filter(activity =>
-          getActivityTypeFromName(activity.name) === selectedCategory
-        );
+      <div class="card">
+        <div class="step">Krok 2</div>
+        <h3>Připoj se</h3>
+        <p>
+          Jedním kliknutím se přidáš na aktivitu. Ostatní okamžitě uvidí, že s tebou můžou počítat.
+        </p>
+      </div>
+
+      <div class="card">
+        <div class="step">Krok 3</div>
+        <h3>Sportuj a pozvi další</h3>
+        <p>
+          Aktivitu můžeš sdílet přes WhatsApp, rychle doplnit další lidi a mít všechno přehledně na jednom místě.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="whySection">
+    <h2>Proč Zuno</h2>
+    <p class="lead">
+      Zuno pomáhá lidem domluvit sport a aktivity rychleji, jednodušeji a bez zmatku.
+    </p>
+
+    <div class="grid-2">
+      <div class="card">
+        <h3>Konec chaosu ve skupinách</h3>
+        <p>
+          Nemusíš projíždět desítky zpráv. Hned vidíš konkrétní aktivitu, kdo ji pořádá a kdo už se přidal.
+        </p>
+      </div>
+
+      <div class="card">
+        <h3>Snazší hledání parťáků</h3>
+        <p>
+          Když chceš padel, tenis nebo běh, Zuno ti pomůže rychle najít lidi, kteří chtějí to samé.
+        </p>
+      </div>
+
+      <div class="card">
+        <h3>Všechno na jednom místě</h3>
+        <p>
+          Profil, aktivity, přihlášení účastníci, sdílení i organizace — nemusíš přepínat mezi dalšími aplikacemi.
+        </p>
+      </div>
+
+      <div class="card">
+        <h3>Více akce, méně domlouvání</h3>
+        <p>
+          Místo dlouhého psaní prostě vytvoříš aktivitu nebo se připojíš a jdeš sportovat.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="about-box">
+      <h2>O aplikaci</h2>
+      <p>
+        Zuno je aplikace pro lidi, kteří chtějí snadno najít další sportovce a domlouvat se na aktivitách ve svém okolí.
+        Můžeš si vytvořit profil, přidat se na aktivitu, pozvat další lidi a postupně si budovat vlastní sportovní komunitu.
+      </p>
+    </div>
+  </section>
+
+  <div class="footer">
+    Zuno • Spojujeme lidi přes sport a společné aktivity
+  </div>
+
+  <div class="modal-overlay" id="loginModal">
+    <div class="modal">
+      <h3>Přihlášení do Zuno</h3>
+      <p>
+        Přihlas se přes Google. Pokud jsi tu poprvé, po přihlášení si doplníš profil a můžeš hned začít.
+      </p>
+
+      <button class="google-btn" id="googleLoginBtn">Pokračovat přes Google</button>
+      <button class="close-modal-btn" id="closeLoginModalBtn">Zavřít</button>
+      <div class="status" id="loginStatus">Nepřihlášený</div>
+    </div>
+  </div>
+
+  <script defer src="/__/firebase/10.12.2/firebase-app-compat.js"></script>
+  <script defer src="/__/firebase/10.12.2/firebase-auth-compat.js"></script>
+  <script defer src="/__/firebase/10.12.2/firebase-firestore-compat.js"></script>
+  <script defer src="/__/firebase/init.js"></script>
+
+  <script>
+    window.addEventListener("load", function () {
+      const auth = firebase.auth();
+      const db = firebase.firestore();
+
+      const sidebar = document.getElementById("sidebar");
+      const sidebarOverlay = document.getElementById("sidebarOverlay");
+      const openSidebarBtn = document.getElementById("openSidebarBtn");
+      const closeSidebarBtn = document.getElementById("closeSidebarBtn");
+
+      const loginModal = document.getElementById("loginModal");
+      const googleLoginBtn = document.getElementById("googleLoginBtn");
+      const closeLoginModalBtn = document.getElementById("closeLoginModalBtn");
+      const loginStatus = document.getElementById("loginStatus");
+
+      const loginTopBtn = document.getElementById("loginTopBtn");
+      const profileTopBtn = document.getElementById("profileTopBtn");
+      const appTopBtn = document.getElementById("appTopBtn");
+      const logoutTopBtn = document.getElementById("logoutTopBtn");
+
+      const heroStartBtn = document.getElementById("heroStartBtn");
+      const heroHowBtn = document.getElementById("heroHowBtn");
+      const howBtn = document.getElementById("howBtn");
+      const whyBtn = document.getElementById("whyBtn");
+
+      const topUserBox = document.getElementById("topUserBox");
+      const topUserPhoto = document.getElementById("topUserPhoto");
+      const topUserName = document.getElementById("topUserName");
+
+      const sidebarUser = document.getElementById("sidebarUser");
+      const sidebarUserPhoto = document.getElementById("sidebarUserPhoto");
+      const sidebarUserName = document.getElementById("sidebarUserName");
+      const sidebarUserEmail = document.getElementById("sidebarUserEmail");
+
+      function scrollToId(id) {
+        const el = document.getElementById(id);
+        if (el) el.scrollIntoView({ behavior: "smooth" });
       }
 
-      if (activities.length === 0) {
-        activitiesDiv.innerHTML = `<div class="empty-box">Pro tento filtr tu nejsou žádné aktivity.</div>`;
-        return;
+      howBtn.onclick = () => scrollToId("howSection");
+      heroHowBtn.onclick = () => scrollToId("howSection");
+      whyBtn.onclick = () => scrollToId("whySection");
+
+      function openSidebar() {
+        sidebar.classList.add("active");
+        sidebarOverlay.classList.add("active");
       }
 
-      activities.forEach((data) => {
-        const id = data.id;
-        const people = getPeopleArray(data);
-        const comments = getCommentsArray(data);
-        const detectedType = getActivityTypeFromName(data.name);
-        const currentUsername = usernameInput.value.trim();
-        const isJoined = currentUsername ? people.includes(currentUsername) : false;
-        const isOrganizer = currentUsername === data.author;
+      function closeSidebar() {
+        sidebar.classList.remove("active");
+        sidebarOverlay.classList.remove("active");
+      }
 
-        const div = document.createElement("div");
-        div.className = "card";
+      openSidebarBtn.onclick = openSidebar;
+      closeSidebarBtn.onclick = closeSidebar;
+      sidebarOverlay.onclick = closeSidebar;
 
-        const placeUrl = `https://www.google.com/maps/search/${encodeURIComponent(data.place)}`;
+      function openLoginModal() {
+        loginModal.classList.add("active");
+      }
 
-        div.innerHTML = `
-          <div class="card-top">
-            <div class="card-left">
-              <div class="card-title">${data.name}</div>
+      function closeLoginModal() {
+        loginModal.classList.remove("active");
+      }
 
-              <div class="meta">
-                ${detectedType} •
-                <a href="${placeUrl}" target="_blank">${data.place}</a>
-                • ${formatDate(data.date)}
-                • ${data.time}
-              </div>
+      closeLoginModalBtn.onclick = closeLoginModal;
+      loginModal.onclick = (e) => {
+        if (e.target === loginModal) closeLoginModal();
+      };
 
-              <div class="people">
-                👥 ${people.length}/${data.limit} lidí<br>
-                ${people.length ? people.join(", ") : "Zatím nikdo"}
-              </div>
+      function readCachedProfile() {
+        try {
+          return JSON.parse(localStorage.getItem("zunoProfile") || "null");
+        } catch (e) {
+          return null;
+        }
+      }
 
-              <div class="author">👤 Organizátor: <span class="authorLink" data-author="${data.author}">${data.author}</span></div>
-            </div>
+      function cacheProfile(profile) {
+        localStorage.setItem("zunoProfile", JSON.stringify(profile));
+      }
 
-            <div class="button-column">
-              <button class="joinBtn">${isJoined ? "Opustit" : "Připojit se"}</button>
-              <button class="waBtn">WhatsApp</button>
-              ${isOrganizer ? `<button class="editBtn">Upravit</button>` : ""}
-              ${isOrganizer ? `<button class="deleteBtn">Smazat</button>` : ""}
-            </div>
-          </div>
+      function clearProfileCache() {
+        localStorage.removeItem("zunoProfile");
+      }
 
-          <div class="comments-box">
-            <div class="comments-title">Komentáře</div>
-            <div class="comments-list">${renderCommentList(comments)}</div>
+      function renderSignedOut() {
+        loginStatus.textContent = "Nepřihlášený";
 
-            <div class="comment-form">
-              <textarea class="commentInput" placeholder="Napiš komentář k aktivitě..."></textarea>
-              <button class="commentBtn">Přidat komentář</button>
-            </div>
-          </div>
-        `;
+        loginTopBtn.style.display = "inline-block";
+        profileTopBtn.style.display = "none";
+        appTopBtn.style.display = "none";
+        logoutTopBtn.style.display = "none";
 
-        div.querySelector(".joinBtn").onclick = async () => {
-          const username = usernameInput.value.trim();
+        topUserBox.style.display = "none";
+        sidebarUser.style.display = "none";
 
-          if (!username) {
-            alert("Nejdřív napiš své jméno nahoře.");
-            return;
-          }
+        loginTopBtn.onclick = openLoginModal;
+        heroStartBtn.onclick = openLoginModal;
+      }
 
-          if (people.includes(username)) {
-            const newPeople = people.filter(p => p !== username);
-            await updateDoc(doc(db, "activities", id), {
-              people: newPeople
+      function renderSignedIn(profile, user) {
+        const name = profile?.name || user?.displayName || "Uživatel";
+        const email = profile?.email || user?.email || "";
+        const photo = profile?.photo || user?.photoURL || "https://via.placeholder.com/100x100.png?text=+";
+
+        loginStatus.textContent = "Přihlášen: " + (email || name);
+
+        loginTopBtn.style.display = "none";
+        profileTopBtn.style.display = "inline-block";
+        appTopBtn.style.display = "inline-block";
+        logoutTopBtn.style.display = "inline-block";
+
+        topUserBox.style.display = "flex";
+        topUserPhoto.src = photo;
+        topUserName.textContent = name;
+
+        sidebarUser.style.display = "flex";
+        sidebarUserPhoto.src = photo;
+        sidebarUserName.textContent = name;
+        sidebarUserEmail.textContent = email;
+
+        profileTopBtn.onclick = () => {
+          window.location.href = "profil.html";
+        };
+
+        appTopBtn.onclick = () => {
+          window.location.href = "app.html";
+        };
+
+        heroStartBtn.onclick = () => {
+          window.location.href = "app.html";
+        };
+
+        logoutTopBtn.onclick = async () => {
+          await auth.signOut();
+          clearProfileCache();
+          window.location.href = "index.html";
+        };
+      }
+
+      loginTopBtn.onclick = openLoginModal;
+      heroStartBtn.onclick = openLoginModal;
+
+      googleLoginBtn.onclick = async () => {
+        loginStatus.textContent = "Otevírám Google login...";
+
+        try {
+          const provider = new firebase.auth.GoogleAuthProvider();
+          const result = await auth.signInWithPopup(provider);
+          const user = result.user;
+
+          const snap = await db.collection("profiles").doc(user.uid).get();
+
+          if (snap.exists) {
+            const profile = snap.data();
+            cacheProfile({
+              uid: user.uid,
+              name: profile.name || user.displayName || "Uživatel",
+              email: user.email || "",
+              photo: profile.photo || user.photoURL || ""
             });
-            return;
-          }
-
-          if (people.length >= data.limit) {
-            alert("Aktivita je plná.");
-            return;
-          }
-
-          const newPeople = [...people, username];
-
-          await updateDoc(doc(db, "activities", id), {
-            people: newPeople
-          });
-        };
-
-        div.querySelector(".waBtn").onclick = () => {
-          shareToWhatsApp(data);
-        };
-
-        const authorLink = div.querySelector(".authorLink");
-        if (authorLink) {
-          authorLink.onclick = () => {
-            localStorage.setItem("selectedProfileName", data.author);
+            window.location.href = "app.html";
+          } else {
+            cacheProfile({
+              uid: user.uid,
+              name: user.displayName || "Uživatel",
+              email: user.email || "",
+              photo: user.photoURL || ""
+            });
             window.location.href = "profil.html";
-          };
-        }
-
-        const editBtn = div.querySelector(".editBtn");
-        if (editBtn) {
-          editBtn.onclick = async () => {
-            const username = usernameInput.value.trim();
-
-            if (username !== data.author) {
-              alert("Tuhle aktivitu může upravit jen organizátor.");
-              return;
-            }
-
-            const newName = prompt("Nový název aktivity:", data.name);
-            if (newName === null || !newName.trim()) return;
-
-            const newPlace = prompt("Nové místo:", data.place);
-            if (newPlace === null || !newPlace.trim()) return;
-
-            const newDate = prompt("Nové datum (YYYY-MM-DD):", data.date);
-            if (newDate === null || !newDate.trim()) return;
-
-            const newTime = prompt("Nový čas (HH:MM):", data.time);
-            if (newTime === null || !newTime.trim()) return;
-
-            const newLimit = prompt("Nový maximální počet lidí:", data.limit);
-            if (newLimit === null || !newLimit.trim()) return;
-
-            const activityTimestamp = getTimestampFromParts(newDate, newTime);
-            const deleteAfterMs = DELETE_AFTER_HOURS * 60 * 60 * 1000;
-
-            if (activityTimestamp + deleteAfterMs < Date.now()) {
-              alert("Takto upravená aktivita už by byla starší než 3 hodiny, takže ji nejde uložit.");
-              return;
-            }
-
-            await updateDoc(doc(db, "activities", id), {
-              name: newName.trim(),
-              place: newPlace.trim(),
-              date: newDate.trim(),
-              time: newTime.trim(),
-              limit: Number(newLimit)
-            });
-          };
-        }
-
-        const deleteBtn = div.querySelector(".deleteBtn");
-        if (deleteBtn) {
-          deleteBtn.onclick = async () => {
-            const username = usernameInput.value.trim();
-
-            if (username !== data.author) {
-              alert("Tuhle aktivitu může smazat jen organizátor.");
-              return;
-            }
-
-            await deleteDoc(doc(db, "activities", id));
-          };
-        }
-
-        div.querySelector(".commentBtn").onclick = async () => {
-          const username = usernameInput.value.trim();
-          const commentInput = div.querySelector(".commentInput");
-          const text = commentInput.value.trim();
-
-          if (!username) {
-            alert("Nejdřív napiš své jméno nahoře.");
-            return;
           }
+        } catch (e) {
+          console.error(e);
+          loginStatus.textContent = "Chyba: " + e.message;
+        }
+      };
 
-          if (!text) {
-            alert("Napiš komentář.");
-            return;
-          }
+      const cached = readCachedProfile();
+      if (cached) {
+        topUserPhoto.src = cached.photo || "https://via.placeholder.com/100x100.png?text=+";
+        topUserName.textContent = cached.name || "Uživatel";
+        sidebarUserPhoto.src = cached.photo || "https://via.placeholder.com/100x100.png?text=+";
+        sidebarUserName.textContent = cached.name || "Uživatel";
+        sidebarUserEmail.textContent = cached.email || "";
+      }
 
-          const newComments = [
-            ...comments,
-            {
-              author: username,
-              text
-            }
-          ];
+      auth.onAuthStateChanged(async (user) => {
+        if (!user) {
+          renderSignedOut();
+          return;
+        }
 
-          await updateDoc(doc(db, "activities", id), {
-            comments: newComments
-          });
+        try {
+          const snap = await db.collection("profiles").doc(user.uid).get();
+          const profile = snap.exists ? snap.data() : {};
 
-          commentInput.value = "";
-        };
+          const finalProfile = {
+            uid: user.uid,
+            name: profile.name || user.displayName || "Uživatel",
+            email: user.email || "",
+            photo: profile.photo || user.photoURL || ""
+          };
 
-        activitiesDiv.appendChild(div);
+          cacheProfile(finalProfile);
+          renderSignedIn(finalProfile, user);
+        } catch (e) {
+          console.error(e);
+          renderSignedIn(cached || {}, user);
+        }
       });
-    }
-
-    onSnapshot(collection(db, "activities"), async (snapshot) => {
-      allActivities = [];
-
-      snapshot.forEach((docSnap) => {
-        const data = docSnap.data();
-        const id = docSnap.id;
-        allActivities.push({ id, ...data });
-      });
-
-      await cleanupOldActivities(allActivities);
-      renderActivities();
     });
   </script>
-
 </body>
 </html>
